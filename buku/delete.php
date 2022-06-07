@@ -1,21 +1,20 @@
 <?php
-include_once '../koneksi.php';
-/**
+require_once '../koneksi.php';
+
+/***
  * @var $connection PDO
  */
-if ($_POST){
-    $isbn = $_POST['isbn'];
 
-    $stmt = $connection->prepare("DELETE FROM buku WHERE isbn = '1323'");
-    $stmt->execute();
+$isbn = $_POST['isbn'];
+try {
+    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $response['message'] = "Data Berhasil di Hapus";
+    $sql = "Delete FROM buku WHERE `isbn`= '$isbn'";
 
-    $json = json_encode($response, JSON_PRETTY_PRINT);
-    echo $json;
-
-} else {
-    $response['message'] = "Delete Data Gagal";
-    $json = json_encode($response, JSON_PRETTY_PRINT);
-    echo $json;
+    $connection->exec($sql);
+    echo "Data berhasil di hapus";
+} catch(PDOException $e) {
+    echo $sql . "<br>" . $e->getMessage();
 }
+
+$connection = null;
